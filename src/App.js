@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+// import Navbar from "./Navbar";
 const faqs = [
   {
     title: "Where are these chairs assembled?",
@@ -18,27 +19,32 @@ export default function App() {
   return (
     <div>
       <Accordion data={faqs} />
+      {/* <Navbar/> */}
     </div>
   );
 }
 
 function Accordion({ data }) {
+  const [curOpen, setCurOpen] = useState(null)
   return (
     <div className="accordion">
       {data.map((el, i) => (
-        <AccordionItem title={el.title} text={el.text} num={i} key={el.title} />
+        <AccordionItem curOpen={curOpen} onOpen={setCurOpen} title={el.title} num={i} key={el.title} >
+          {el.text}
+          </AccordionItem>
       ))}
     </div>
   );
 }
 
-function AccordionItem({ num, title, text }) {
-  const [isOpen, setIsOpen] = useState(false)
+function AccordionItem({ num, title, curOpen, onOpen, children }) {
 
+  const isOpen = num === curOpen
   function handleToggle(){
-    setIsOpen((isOpen)=> !isOpen)
+    onOpen(isOpen ? null : num)
   }
   return (
+    <>
     <div className={`item my-6 mx-4 bg-gray-100 px-3 py-4 shadow-lg cursor-pointer ${isOpen ? "border-t-4 border-green-500 shadow-xl shadow-green-200": ""}`} onClick={handleToggle}>
       <div className="flex justify-between items-center">
         <div className="flex space-x-8">
@@ -52,7 +58,9 @@ function AccordionItem({ num, title, text }) {
         </div>
       </div>
 
-      {isOpen && <div className="content-box text-lg px-14 py-6">{text}</div>}
+      {isOpen && <div className="content-box text-lg px-14 py-6">{children}</div>}
     </div>
+    
+    </>
   );
 }
